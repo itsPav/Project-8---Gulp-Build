@@ -7,8 +7,9 @@ var   gulp = require('gulp'),
       sass = require('gulp-sass'),
       maps = require('gulp-sourcemaps'),
   imagemin = require('gulp-imagemin'),
-     clean = require('gulp-clean'),
- uglifycss = require('gulp-uglifycss');
+       del = require('del'),
+ uglifycss = require('gulp-uglifycss'),
+livereload = require('gulp-livereload');
 
 gulp.task('jsMaps', function() {
     return gulp.src(['js/global.js', 'js/circle/autogrow.js', 'js/circle/circle.js'])
@@ -40,7 +41,8 @@ gulp.task('styles', ['compileSass'], function() {
         "uglyComments": true
         }))
         .pipe(rename('all.min.css'))
-        .pipe(gulp.dest('dist/styles'));
+        .pipe(gulp.dest('dist/styles'))
+        .pipe(livereload());
 })
 
 gulp.task('images', function() {
@@ -50,14 +52,17 @@ gulp.task('images', function() {
 })
 
 gulp.task('clean', function() {
-    return gulp.src('dist/*', {read: false})
-        .pipe(clean());
+    del('dist');
 })
 
 gulp.task('watchSass', function() {
-    
+    livereload.listen();
+    livereload.reload();
+    gulp.watch('sass/**/*.scss', ['styles']);
 })
 
-gulp.task('build', ['clean', 'scripts', 'styles', 'images']);
+gulp.task('build', ['scripts', 'styles', 'images']);
 
-gulp.task('default', ['build'])
+gulp.task('default', ['clean'], function() {
+    gulp.start('build');
+})
