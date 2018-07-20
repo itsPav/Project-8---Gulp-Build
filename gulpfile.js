@@ -1,16 +1,18 @@
 'use strict';
 
+// declaring all modules used
 var   gulp = require('gulp'),
     concat = require('gulp-concat'),
     uglify = require('gulp-uglify'),
     rename = require('gulp-rename'),
-      sass = require('gulp-sass'),
-      maps = require('gulp-sourcemaps'),
-  imagemin = require('gulp-imagemin'),
-       del = require('del'),
- uglifycss = require('gulp-uglifycss'),
-livereload = require('gulp-livereload');
+    sass = require('gulp-sass'),
+    maps = require('gulp-sourcemaps'),
+    imagemin = require('gulp-imagemin'),
+    del = require('del'),
+    uglifycss = require('gulp-uglifycss'),
+    browserSync = require('browser-sync').create();
 
+// gulp task to concat js files and create source map
 gulp.task('jsMaps', function() {
     return gulp.src(['js/global.js', 'js/circle/autogrow.js', 'js/circle/circle.js'])
             .pipe(maps.init())
@@ -19,6 +21,7 @@ gulp.task('jsMaps', function() {
             .pipe(gulp.dest('dist/scripts'));
 });
 
+// gulp task to minify the concat js file
 gulp.task('scripts', ['jsMaps'], function () {
     return gulp.src('dist/scripts/all.js')
         .pipe(uglify())
@@ -26,6 +29,7 @@ gulp.task('scripts', ['jsMaps'], function () {
         .pipe(gulp.dest('dist/scripts'));
 })
 
+// gulp task to compile sass into 1 file and create a source map
 gulp.task('compileSass', function() {
     return gulp.src(['sass/global.scss'])
             .pipe(maps.init())
@@ -34,6 +38,7 @@ gulp.task('compileSass', function() {
             .pipe(gulp.dest('dist/styles'));
 });
 
+// gulp task to minify sass
 gulp.task('styles', ['compileSass'], function() {
     gulp.src('dist/styles/global.css')
         .pipe(uglifycss({
@@ -42,27 +47,32 @@ gulp.task('styles', ['compileSass'], function() {
         }))
         .pipe(rename('all.min.css'))
         .pipe(gulp.dest('dist/styles'))
-        .pipe(livereload());
+        .pipe(browserSync.stream());
 })
 
+// gulp task to minimize image file size
 gulp.task('images', function() {
     return gulp.src('images/*')
         .pipe(imagemin())
         .pipe(gulp.dest('dist/content'));
 })
 
+// do gulp clean sync
 gulp.task('clean', function() {
-    del('dist');
+    del.sync('dist');
 })
 
-gulp.task('watchSass', function() {
-    livereload.listen();
-    livereload.reload();
-    gulp.watch('sass/**/*.scss', ['styles']);
-})
+// launch static server and watch for changes in sass folder
+gulp.task('browser-sync', function() {
+    browserSync.init({
+        server: {
+            baseDir: "./"
+        }
+    });
 
-gulp.task('build', ['scripts', 'styles', 'images']);
+    gulp.watch("sass/*.scss", ['styles']);
+});
 
-gulp.task('default', ['clean'], function() {
-    gulp.start('build');
-})
+gulp.task('build', ['clean', 'scripts', 'styles', 'images', 'browser-sync']);
+
+gulp.task('default', ['build'])

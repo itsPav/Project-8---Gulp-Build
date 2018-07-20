@@ -291,7 +291,7 @@ input[type="email"].circle--input--h6,input[type="number"].circle--input--h6,inp
 .icon-file:before{content:""}.icon-file-add:before{content:""}
 .icon-file-subtract:before{content:""}.icon-help:before{content:""}
 .icon-open:before{content:""}.icon-ellipsis:before{content:""}
-body{padding-top:75px}.circle--header{position:fixed;top:100;left:0;right:0;z-index:2;background:rgba(34,34,34,0.98)}
+body{padding-top:75px}.circle--header{position:fixed;top:0;left:0;right:0;z-index:2;background:rgba(34,34,34,0.98)}
 .photo-stream--photos--list{list-style:none}.photo-stream--photos--list li{padding:20px 0 20px 75px;border-bottom:1px solid #e1e1e1}
 .photo-stream--photos--list h3{margin:0 0 15px}.photo-stream--photos--list .circle--avatar{float:left;margin-left:-75px}
 .photo-stream--photos--list img{width:100%;display:block;margin-bottom:20px}.photo-stream--photos--list p{margin:0 0 10px}
